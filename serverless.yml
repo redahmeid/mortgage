@@ -13,8 +13,8 @@
 
 service: mortgage
 # app and org for use with dashboard.serverless.com
-#app: your-app-name
-#org: your-org-name
+app: mortgage
+org: redahmeid
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -122,6 +122,6 @@ custom:
     dockerizePip: non-linux
 
 package:
-  exclude:
-    - node_modules/**
-    - venv/**
+  patterns:
+    - '!node_modules/**'
+    - '!venv/**''
