@@ -3,6 +3,7 @@ import numpy as np
 from pydantic import BaseModel
 from pydantic import parse_obj_as
 
+
 def main(event, context):
     body =json.loads(event["body"])
     mortgage = BasicCalculatorRequest(fixed_term_rate_years=body["fixed_term_rate_years"],loan_term_years=body["loan_term_years"],loan_amount=body["loan_amount"],fixed_term_rate=body["fixed_term_rate"],rate_after_fixed_term=body["rate_after_fixed_term"],extra_repayments=body["extra_repayments"])
@@ -13,6 +14,7 @@ def main(event, context):
 
 
 class BasicCalculatorRequest(BaseModel):
+    debt: float | None
     fixed_term_rate_years:int
     loan_term_years:int
     loan_amount:float
