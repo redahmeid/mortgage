@@ -14,7 +14,6 @@ def main(event, context):
 
 
 class BasicCalculatorRequest(BaseModel):
-    debt: float | None
     fixed_term_rate_years:int
     loan_term_years:int
     loan_amount:float
