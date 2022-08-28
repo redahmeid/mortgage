@@ -173,7 +173,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/mortgage/dev/1661681892137-2022-08-28T10:18:12.137Z/mortgage.zip"
+                "S3Key": "serverless/mortgage/dev/1661691000306-2022-08-28T12:50:00.306Z/mortgage.zip"
               },
               "Handler": "handler.main",
               "Runtime": "python3.8",
@@ -191,14 +191,14 @@
               "CalcLogGroup"
             ]
           },
-          "CalcLambdaVersionh8DeSpnboNeSpw0WpTo8AgvOlhj16NtdIHB3Y8OwM": {
+          "CalcLambdaVersionBn6yHxX2yT68A69pjO4HCt8Cyocr6EUDSAuWq6s": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CalcLambdaFunction"
               },
-              "CodeSha256": "Wse4MfPgQXk5CGYwke2zg6DcQxg7Z2qDbg+qXKESZhU="
+              "CodeSha256": "q7TngqMWfz5epem/9wIUWtL20ZjR+cytQ2Rc2gONdnw="
             }
           }
         },
@@ -214,7 +214,7 @@
           "CalcLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CalcLambdaVersionh8DeSpnboNeSpw0WpTo8AgvOlhj16NtdIHB3Y8OwM"
+              "Ref": "CalcLambdaVersionBn6yHxX2yT68A69pjO4HCt8Cyocr6EUDSAuWq6s"
             },
             "Export": {
               "Name": "sls-mortgage-dev-CalcLambdaFunctionQualifiedArn"
@@ -325,7 +325,7 @@
         "timeout": 6,
         "runtime": "python3.8",
         "vpc": {},
-        "versionLogicalId": "CalcLambdaVersionh8DeSpnboNeSpw0WpTo8AgvOlhj16NtdIHB3Y8OwM"
+        "versionLogicalId": "CalcLambdaVersionBn6yHxX2yT68A69pjO4HCt8Cyocr6EUDSAuWq6s"
       }
     },
     "configValidationMode": "warn",
@@ -344,6 +344,15 @@
       },
       "custom": {
         "$ref": "$[\"service\"][\"custom\"]"
+      },
+      "package": {
+        "exclude": [
+          "node_modules/**",
+          "venv/**"
+        ],
+        "artifactsS3KeyDirname": "serverless/mortgage/dev/code-artifacts",
+        "artifact": "/Users/redahmeid/Documents/mortgage/.serverless/mortgage.zip",
+        "artifactDirectoryName": "serverless/mortgage/dev/1661691000306-2022-08-28T12:50:00.306Z"
       }
     },
     "layers": {},
@@ -351,7 +360,7 @@
     "artifact": "/Users/redahmeid/Documents/mortgage/.serverless/mortgage.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/mortgage/dev/1661681892137-2022-08-28T10:18:12.137Z",
+    "artifactDirectoryName": "serverless/mortgage/dev/1661691000306-2022-08-28T12:50:00.306Z",
     "artifact": "mortgage.zip"
   }
 }

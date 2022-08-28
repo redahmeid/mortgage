@@ -1,20 +1,18 @@
 import json
 import numpy as np
 from pydantic import BaseModel
+from pydantic import parse_obj_as
 
 def main(event, context):
-    print(event)
     body =json.loads(event["body"])
-    mortgage = Mortgage(fixed_term_rate_years=body["fixed_term_rate_years"],loan_term_years=body["loan_term_years"],loan_amount=body["loan_amount"],fixed_term_rate=body["fixed_term_rate"],rate_after_fixed_term=body["rate_after_fixed_term"],extra_repayments=body["extra_repayments"])
+    mortgage = BasicCalculatorRequest(fixed_term_rate_years=body["fixed_term_rate_years"],loan_term_years=body["loan_term_years"],loan_amount=body["loan_amount"],fixed_term_rate=body["fixed_term_rate"],rate_after_fixed_term=body["rate_after_fixed_term"],extra_repayments=body["extra_repayments"])
     result = mortgage_payments(mortgage)
-    print("Before return")
-    print(result)
     return {'statusCode': 200,
-            'body': json.dumps(result),
+            'body': result.json(),
             'headers': {'Content-Type': 'application/json'}}
 
 
-class Mortgage(BaseModel):
+class BasicCalculatorRequest(BaseModel):
     fixed_term_rate_years:int
     loan_term_years:int
     loan_amount:float
@@ -22,8 +20,15 @@ class Mortgage(BaseModel):
     rate_after_fixed_term:float
     extra_repayments:float
 
-def mortgage_payments(mortgage:Mortgage):
-    
+class BasicCalculatorResponse(BaseModel):
+    monthly_payment:float
+    total_interest_payments:float
+    remaining_mortgage_at_fixed_term:float
+    loan_term:int
+    total_extra_repayments:float
+
+def mortgage_payments(mortgage:BasicCalculatorRequest):
+  
     loan_term = mortgage.loan_term_years*12
     fixed_rate_months = mortgage.fixed_term_rate_years*12
     original_loan_amount = mortgage.loan_amount
@@ -47,13 +52,13 @@ def mortgage_payments(mortgage:Mortgage):
             loan_term = i
             break
     
-    return {
-        "monthly_payment":np.round(X,2),
-        "total_interest_payments":np.round(np.sum(Monthly_Interest),2),
-        "remaining_mortgage_at_fixed_term":np.round(amount_at_fixed_term,2),
-        "loan_term":loan_term,
-        "total_extra_repayments":repayments_at_fixed_term
-    }
+    return BasicCalculatorResponse(
+        monthly_payment=np.round(X,2),
+        total_interest_payments=np.round(np.sum(Monthly_Interest),2),
+        remaining_mortgage_at_fixed_term=np.round(amount_at_fixed_term,2),
+        loan_term=loan_term,
+        total_extra_repayments=repayments_at_fixed_term
+    )
 
 
 	
