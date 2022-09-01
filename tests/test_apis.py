@@ -5,41 +5,46 @@ import stamp_duty
 import json
 from pydantic import parse_obj_as
 from py_event_mocks import create_event
-import calculators as calc
-class TestStringMethods(unittest.TestCase):
 
-    def test_mortgage_payments(self):
+class TestStringMethods(unittest.TestCase):
+    def test_api(self):
         
         for request in requests:
-            mortgage = parse_obj_as(mc.BasicCalculatorRequest,request["request"])
+            # mortgage = parse_obj_as(handler.BasicCalculatorRequest,)
+            event = create_event(
+                event_type="aws:api-gateway-event",body={
+                    "body":json.dumps(request["request"])
+                }
+                )
             # mortgage = request["request"]
-            body = calc.mortgage_payments(mortgage)
-            self.assertEqual(round(body.monthly_payment),round(request["answer"]))
-            
-    def test_remaining_equity(self):
+            response = handler.main(event,None)
+            self.assertEqual(round(json.loads(response["body"])["monthly_payment"]),round(request["answer"]))
+
+    def test_remaining_equity_api(self):
         
         for request in remaining_equity_requests:
-            mortgage = parse_obj_as(mc.RemainingEquityRequest,request["request"])
+            # mortgage = parse_obj_as(handler.BasicCalculatorRequest,)
+            event = create_event(
+                event_type="aws:api-gateway-event",body={
+                    "body":json.dumps(request["request"])
+                }
+                )
             # mortgage = request["request"]
-            body = calc.remaining_equity(mortgage)
-            self.assertEqual(round(body.remaining_equity),round(request["answer"]))
+            response = handler.remaining_equity_api(event,None)
+            self.assertEqual(round(json.loads(response["body"])["remaining_equity"]),round(request["answer"]))
     
-    def test_stamp_duty(self):
+    def test_full_calculator_head(self):
         
-        for request in stamp_duty_requests:
-            
-            body = stamp_duty.duty_calculator(request["request"])
-            self.assertEqual(round(body),round(request["answer"]))
-    
-    def test_mortgage_needed(self):
-        
-        for request in mortgage_needed_request:
-            figures = parse_obj_as(mc.HowMuchMortgageRequest,request["request"])
-            body = calc.how_much_mortgage_do_i_need(figures)
-            self.assertEqual(round(body.total_mortgage_needed),round(request["answer"]))
+       
+            event = create_event(
+                event_type="aws:api-gateway-event"
+                )
+            # mortgage = request["request"]
+            response = handler.full_calculator_head(event,None)
+            print(response)
+            self.assertIsNotNone(json.loads(response["body"]))
 
-   
-    
+
 requests = [
     {"request":mc.BasicCalculatorRequest(fixed_term_rate_years=2,loan_term_years=21,loan_amount=350000,fixed_term_rate=1.11,rate_after_fixed_term=5.38,extra_repayments=0).dict(),"answer":1558},
     {"request":mc.BasicCalculatorRequest(fixed_term_rate_years=2,loan_term_years=10,loan_amount=360000,fixed_term_rate=3,rate_after_fixed_term=5.38,extra_repayments=0).dict(),"answer":3476},
@@ -60,6 +65,3 @@ stamp_duty_requests = [
     {"request":700000,"answer":25000},
     
 ]  
-
-if __name__ == '__main__':
-    unittest.main()

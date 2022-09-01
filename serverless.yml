@@ -63,6 +63,10 @@ provider:
 functions:
   calc:
     handler: handler.main
+  full_calc:
+    handler: handler.full_calculator_api
+  full_calc_head:
+    handler: handler.full_calculator_head
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
