@@ -26,10 +26,11 @@ def full_calculator_api(event, context):
             'headers': {'Content-Type': 'application/json'}}
 
 def full_calculator_head(event, context):
-   
-    return {'statusCode': 200,
+    return_obj = {'statusCode': 200,
             'body': FullCalculatorRequest().json(),
             'headers': {'Content-Type': 'application/json'}}
+    print(return_obj)
+    return return_obj
 
 def remaining_equity_api(event, context):
     body =json.loads(event["body"])

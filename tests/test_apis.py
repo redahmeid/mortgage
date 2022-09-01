@@ -41,14 +41,14 @@ class TestStringMethods(unittest.TestCase):
                 )
             # mortgage = request["request"]
             response = handler.full_calculator_head(event,None)
-            print(response)
+            
             self.assertIsNotNone(json.loads(response["body"]))
 
 
 requests = [
     {"request":mc.BasicCalculatorRequest(fixed_term_rate_years=2,loan_term_years=21,loan_amount=350000,fixed_term_rate=1.11,rate_after_fixed_term=5.38,extra_repayments=0).dict(),"answer":1558},
     {"request":mc.BasicCalculatorRequest(fixed_term_rate_years=2,loan_term_years=10,loan_amount=360000,fixed_term_rate=3,rate_after_fixed_term=5.38,extra_repayments=0).dict(),"answer":3476},
-    {"request":mc.BasicCalculatorRequest(fixed_term_rate_years=5,loan_term_years=20,loan_amount=500000,fixed_term_rate=3.5,rate_after_fixed_term=5.38,extra_repayments=0).dict(),"answer":2899.80}
+    {"request":mc.BasicCalculatorRequest(fixed_term_rate_years=5,loan_term_years=20,loan_amount=500000,fixed_term_rate=3.5,rate_after_fixed_term=5.38).dict(),"answer":2899.80}
 ]
 
 remaining_equity_requests = [

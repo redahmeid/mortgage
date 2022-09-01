@@ -1,3 +1,4 @@
+import typing
 from pydantic import BaseModel
 from pydantic import parse_obj_as
 
@@ -8,7 +9,7 @@ class BasicCalculatorRequest(BaseModel):
     loan_amount:float
     fixed_term_rate:float
     rate_after_fixed_term:float
-    extra_repayments:float
+    extra_repayments:typing.Optional[float] = 500
 
 class BasicCalculatorResponse(BaseModel):
     monthly_payment:float

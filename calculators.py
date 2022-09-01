@@ -13,14 +13,15 @@ def full_calculator(request:FullCalculatorRequest):
 
     equity = remaining_equity(RemainingEquityRequest(house_price_sale=house_price_to_sell,mortgage_remaining=current_mortgage,debt_to_pay_off=request.debts_to_pay_off,estate_agent_commission=request.estate_agent_commission))
 
-    total_mortgage_needed = how_much_mortgage_do_i_need(HowMuchMortgageRequest(house_price_to_buy=request.house_price_to_buy,remaining_equity=equity,use_remaining_equity_for_duty=request.use_equity_to_pay_duty))
+    total_mortgage_needed = how_much_mortgage_do_i_need(HowMuchMortgageRequest(house_price_to_buy=request.house_price_to_buy,remaining_equity=equity.remaining_equity,use_remaining_equity_for_duty=request.use_equity_to_pay_duty))
 
-    extra_mortgage_needed = total_mortgage_needed.total_mortgage_needed-current_mortgage
-
+    print("Total mortgage %s"%total_mortgage_needed)
+    extra_mortgage_needed = total_mortgage_needed.total_mortgage_needed-equity.remaining_equity
+    print("Extra mortgage needed %s"%extra_mortgage_needed)
     current_payments = mortgage_payments(BasicCalculatorRequest(fixed_term_rate_years=2,loan_term_years=request.current_mortgage_term,loan_amount=request.current_mortgage,fixed_term_rate=request.current_mortgage_rate, rate_after_fixed_term=5,extra_repayments=0))
     extra_payments = mortgage_payments(BasicCalculatorRequest(fixed_term_rate_years=2,loan_term_years=request.new_mortgage_term,loan_amount=extra_mortgage_needed,fixed_term_rate=request.new_mortgage_rate, rate_after_fixed_term=5,extra_repayments=0))
 
-    return FullCalculatorResponse(current_mortgage_payment=current_payments,new_mortgage_payment=extra_payments)
+    return FullCalculatorResponse(current_mortgage_payment=current_payments.monthly_payment,new_mortgage_payment=extra_payments.monthly_payment)
 
 def mortgage_payments(mortgage:BasicCalculatorRequest):
   

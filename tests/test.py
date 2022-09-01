@@ -37,6 +37,14 @@ class TestStringMethods(unittest.TestCase):
             figures = parse_obj_as(mc.HowMuchMortgageRequest,request["request"])
             body = calc.how_much_mortgage_do_i_need(figures)
             self.assertEqual(round(body.total_mortgage_needed),round(request["answer"]))
+    
+    def test_full_calculator(self):
+        
+        for request in full_calculator_requests:
+            
+            body = calc.full_calculator(request["request"])
+            print(body)
+            self.assertEqual(round(body.new_mortgage_payment),round(request["answer"]))
 
    
     
@@ -53,6 +61,21 @@ remaining_equity_requests = [
 
 mortgage_needed_request = [
     {"request":mc.HowMuchMortgageRequest(house_price_to_buy=700000,remaining_equity=300000,use_remaining_equity_for_duty=True).dict(),"answer":375000},
+    
+]
+
+full_calculator_requests = [
+    {"request":mc.FullCalculatorRequest(
+    house_price_to_sell= 700000,
+    house_price_to_buy= 850000,
+    current_mortgage= 355000,
+    estate_agent_commission= 1,
+    current_mortgage_rate= 1.1,
+    new_mortgage_rate= 3.38,
+    current_mortgage_term= 20,
+    new_mortgage_term= 20,
+    debts_to_pay_off= 45000,
+    use_equity_to_pay_duty= True),"answer":1344},
     
 ]
 
