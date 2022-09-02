@@ -63,14 +63,22 @@ provider:
 functions:
   calc:
     handler: handler.main
+    events:
+      - httpApi:
+          path: /basic_calculator
+          method: post
   full_calc:
     handler: handler.full_calculator_api
     events:
       - httpApi:
-        path: /full_calculator
-        method: post
+          path: /full_calculator
+          method: post
   full_calc_head:
     handler: handler.full_calculator_head
+    events:
+      - httpApi:
+          path: /full_calculator
+          method: get
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
