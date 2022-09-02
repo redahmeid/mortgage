@@ -9,8 +9,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "serverless-offline": "^9.3.1",
-    "serverless-python-requirements": "^5.4.0"
+    "serverless-offline": "^9.3.1"
   },
   "dependencies": {
     "slspress": "^2.2.5"
