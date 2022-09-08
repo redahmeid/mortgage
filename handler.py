@@ -23,7 +23,9 @@ def full_calculator_api(event, context):
     result = calc.full_calculator(full_calculator_request)
     return {'statusCode': 200,
             'body': result.json(),
-            'headers': {'Content-Type': 'application/json'}}
+            'headers': {'Content-Type': 'application/json',"Access-Control-Allow-Origin" : "*",
+                    "Access-Control-Allow-Credentials" : "true" 
+      }}
 
 def full_calculator_head(event, context):
     return_obj = {'statusCode': 200,

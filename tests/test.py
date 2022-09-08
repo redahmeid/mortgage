@@ -1,3 +1,4 @@
+from operator import truediv
 import unittest
 import handler
 import mortgage_classes as mc
@@ -37,6 +38,13 @@ class TestStringMethods(unittest.TestCase):
             figures = parse_obj_as(mc.HowMuchMortgageRequest,request["request"])
             body = calc.how_much_mortgage_do_i_need(figures)
             self.assertEqual(round(body.total_mortgage_needed),round(request["answer"]))
+
+    def test_mortgage_mount(self):
+        
+        for request in mortgage_amount_request:
+            figures = parse_obj_as(mc.AmountCalculatorRequest,request["request"])
+            body = calc.mortgage_amount(figures)
+            self.assertEqual(round(body.loan_amount),round(request["answer"]))
     
     def test_full_calculator(self):
         
@@ -45,7 +53,7 @@ class TestStringMethods(unittest.TestCase):
             body = calc.full_calculator(request["request"])
             print(body)
             self.assertEqual(round(body.new_mortgage_payment),round(request["answer"]))
-
+            self.assertIsNotNone(round(body.delayed_loan_amount))
    
     
 requests = [
@@ -64,18 +72,28 @@ mortgage_needed_request = [
     
 ]
 
+mortgage_amount_request = [
+    {"request":mc.AmountCalculatorRequest(loan_term_years=20,monthly_payment=3107,fixed_term_rate=3.38).dict(),"answer":541466},
+    {"request":mc.AmountCalculatorRequest(loan_term_years=20,monthly_payment=5000,fixed_term_rate=4).dict(),"answer":825109},
+]
+
 full_calculator_requests = [
     {"request":mc.FullCalculatorRequest(
-    house_price_to_sell= 700000,
-    house_price_to_buy= 850000,
-    current_mortgage= 355000,
+     house_price_to_sell= 675000,
+    house_price_to_buy= 900000,
+    current_mortgage= 352000,
     estate_agent_commission= 1,
-    current_mortgage_rate= 1.1,
-    new_mortgage_rate= 3.38,
+    mortgage_one_rate= 1.1,
+    mortgage_one_fixed_term= 1.5,
+    mortgage_one_fixed_term_rate= 6,
+    new_mortgage_rate= 4,
+    new_mortgage_fixed_term= 2,
+    new_mortgage_post_fixed_term_rate= 6,
     current_mortgage_term= 20,
     new_mortgage_term= 20,
     debts_to_pay_off= 45000,
-    use_equity_to_pay_duty= True),"answer":1344},
+    early_repayment_fee=7000,
+    use_equity_to_pay_duty= True),"answer":1473.14},
     
 ]
 

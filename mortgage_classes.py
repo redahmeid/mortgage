@@ -4,12 +4,21 @@ from pydantic import parse_obj_as
 
 
 class BasicCalculatorRequest(BaseModel):
-    fixed_term_rate_years:int
-    loan_term_years:int
-    loan_amount:float
-    fixed_term_rate:float
-    rate_after_fixed_term:float
+    fixed_term_rate_years:int=2
+    loan_term_years:int=20
+    loan_amount:float=350000
+    fixed_term_rate:float=1.1
+    rate_after_fixed_term:float=5
     extra_repayments:typing.Optional[float] = 500
+
+class AmountCalculatorRequest(BaseModel):
+    loan_term_years:int
+    monthly_payment:float
+    fixed_term_rate:float
+
+class AmountCalculatorResponse(BaseModel):
+    monthly_payment:float
+    loan_amount:float
 
 class BasicCalculatorResponse(BaseModel):
     monthly_payment:float
@@ -35,22 +44,45 @@ class HowMuchMortgageRequest(BaseModel):
 class HowMuchMortgageResponse(BaseModel):
     total_mortgage_needed:float
 
+class DelayMortgageRequest(BaseModel):
+    length_of_rent:int=12
+    rent_amount:int=3250
+    presumed_rate:float=4
+
 class FullCalculatorRequest(BaseModel):
     house_price_to_sell:float = 700000
-    house_price_to_buy:float = 850000
-    current_mortgage:float = 355000
+    house_price_to_buy:float = 1000000
     estate_agent_commission:float = 1
-    current_mortgage_rate:float = 1.1
-    new_mortgage_rate:float = 3.38
-    current_mortgage_term:int = 20
-    new_mortgage_term:int = 20
+    mortgage_one:BasicCalculatorRequest=BasicCalculatorRequest(fixed_term_rate=1.1)
+    mortgage_two:BasicCalculatorRequest=BasicCalculatorRequest(fixed_term_rate=3.38)
+    delay_mortgage_details:DelayMortgageRequest=DelayMortgageRequest()
     debts_to_pay_off:float = 45000
+    early_payment_fee:float = 7000
     use_equity_to_pay_duty:bool = True
 
-class FullCalculatorResponse(BaseModel):
-    current_mortgage_payment:float
-    new_mortgage_payment:float
 
+
+class DoubleMortgageResponse(BaseModel):
+    mortgage_one_details: BasicCalculatorResponse
+    mortgage_two_details: BasicCalculatorResponse
+    total_mortgage_payment:float
+    total_mortgage:float
+    mortgage_one_after_fixed_term:BasicCalculatorResponse
+    mortgage_two_after_fixed_term:BasicCalculatorResponse
+    total_mortgage_payment_after_fixed_term:float
+    total_mortgage_after_fixed_term:float
+
+class DelayedMortgageResponse(BaseModel):
+    loan_amount:float
+    max_property_value:float
+    percentage_drop:float
+
+
+class FullCalculatorResponse(BaseModel):
+    details_with_ported_mortgage:DoubleMortgageResponse 
+    details_without_porting_mortgage:typing.Optional[BasicCalculatorResponse]
+    details_with_delayed_buy:DelayedMortgageResponse
+    ltv:float
 
 
     

@@ -64,19 +64,20 @@ functions:
   calc:
     handler: handler.main
     events:
-      - httpApi:
+      - http:
           path: /basic_calculator
           method: post
   full_calc:
     handler: handler.full_calculator_api
     events:
-      - httpApi:
+      - http:
           path: /full_calculator
           method: post
+          cors: true
   full_calc_head:
     handler: handler.full_calculator_head
     events:
-      - httpApi:
+      - http:
           path: /full_calculator
           method: get
 #    The following are a few example events you can configure
@@ -132,14 +133,10 @@ functions:
 #       Value: "Some output value"
 plugins:
   - serverless-python-requirements
-  - serverless-offline
  
 custom:
   pythonRequirements:
     dockerizePip: non-linux
-  serverless-offline:
-    httpsProtocol: "dev-certs"
-    httpPort: 4000
     
 
 package:

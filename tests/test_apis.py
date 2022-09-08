@@ -20,6 +20,20 @@ class TestStringMethods(unittest.TestCase):
             response = handler.main(event,None)
             self.assertEqual(round(json.loads(response["body"])["monthly_payment"]),round(request["answer"]))
 
+    def test_full_calculator_api(self):
+        
+        for request in full_calculator_requests:
+            # mortgage = parse_obj_as(handler.BasicCalculatorRequest,)
+            event = create_event(
+                event_type="aws:api-gateway-event",body={
+                    "body":json.dumps(request["request"])
+                }
+                )
+            # mortgage = request["request"]
+            response = handler.full_calculator_api(event,None)
+            self.assertIsNotNone(round(json.loads(response["body"])["delayed_loan_amount"]))
+            # self.assertEqual(round(json.loads(response["body"])["monthly_payment"]),round(request["answer"]))
+
     def test_remaining_equity_api(self):
         
         for request in remaining_equity_requests:
@@ -65,3 +79,23 @@ stamp_duty_requests = [
     {"request":700000,"answer":25000},
     
 ]  
+
+full_calculator_requests = [
+    {"request":mc.FullCalculatorRequest(
+     house_price_to_sell= 675000,
+    house_price_to_buy= 900000,
+    current_mortgage= 352000,
+    estate_agent_commission= 1,
+    mortgage_one_rate= 1.1,
+    mortgage_one_fixed_term= 1.5,
+    mortgage_one_fixed_term_rate= 6,
+    new_mortgage_rate= 4,
+    new_mortgage_fixed_term= 2,
+    new_mortgage_post_fixed_term_rate= 6,
+    current_mortgage_term= 20,
+    new_mortgage_term= 20,
+    debts_to_pay_off= 45000,
+    early_repayment_fee=7000,
+    use_equity_to_pay_duty= True).dict(),"answer":1473.14},
+    
+]
