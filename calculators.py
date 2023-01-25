@@ -61,7 +61,7 @@ def full_calculator(request:FullCalculatorRequest):
         total_mortgage_payment=total_mortgage_monthly_payments,
         total_mortgage_after_fixed_term=total_mortgage_after_fixed_term,
         total_mortgage_payment_after_fixed_term=total_mortgage_monthly_payments_after_fixed_term,
-        equity=equity.remaining_equity)
+        equity=after_pay_stamp_duty)
     
 
     # non_ported_equity = remaining_equity(RemainingEquityRequest(house_price_sale=house_price_to_sell,mortgage_remaining=mortgage_one_loan_amount,debt_to_pay_off=request.debts_to_pay_off+request.early_payment_fee,estate_agent_commission=request.estate_agent_commission,pay_stamp_duty=False))
