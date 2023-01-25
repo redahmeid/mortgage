@@ -80,6 +80,13 @@ functions:
       - http:
           path: /full_calculator
           method: get
+  payment-to-amount-calculator:
+    handler: handler.payment_to_amount_calculator_api
+    events:
+      - http:
+          path: /payment-to-amount-calculator
+          method: post
+          cors: true
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details

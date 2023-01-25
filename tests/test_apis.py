@@ -31,8 +31,23 @@ class TestStringMethods(unittest.TestCase):
                 )
             # mortgage = request["request"]
             response = handler.full_calculator_api(event,None)
-            self.assertIsNotNone(round(json.loads(response["body"])["delayed_loan_amount"]))
+            # self.assertIsNotNone(round(json.loads(response["body"])["delayed_loan_amount"]))
             # self.assertEqual(round(json.loads(response["body"])["monthly_payment"]),round(request["answer"]))
+
+
+    def test_payment_to_amount_calculator_api(self):
+        
+       
+            event = create_event(
+                event_type="aws:api-gateway-event",body={
+                    "body":json.dumps(mc.MaxAmountCalculatorRequest().dict()),
+                    "queryStringParameters":None
+                }
+                )
+            response = handler.payment_to_amount_calculator_api(event,None)
+            # self.assertIsNotNone(round(json.loads(response["body"])["delayed_loan_amount"]))
+            # self.assertEqual(round(json.loads(response["body"])["monthly_payment"]),round(request["answer"]))
+
 
     def test_remaining_equity_api(self):
         

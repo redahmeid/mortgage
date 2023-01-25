@@ -1,9 +1,7 @@
 import json
-from queue import Full
-from xmlrpc.client import boolean
 import numpy as np
 from pydantic import parse_obj_as
-from mortgage_classes import BasicCalculatorRequest, BasicCalculatorResponse, FullCalculatorRequest, FullCalculatorResponse, HowMuchMortgageRequest, HowMuchMortgageResponse,RemainingEquityRequest,RemainingEquityResponse
+from mortgage_classes import BasicCalculatorRequest, BasicCalculatorResponse, FullCalculatorRequest, FullCalculatorResponse, HowMuchMortgageRequest, HowMuchMortgageResponse, MaxAmountCalculatorOptions, MaxAmountCalculatorRequest,RemainingEquityRequest,RemainingEquityResponse
 import stamp_duty
 import calculators as calc
 
@@ -21,6 +19,25 @@ def full_calculator_api(event, context):
     body =json.loads(event["body"])
     full_calculator_request = parse_obj_as(FullCalculatorRequest,body)
     result = calc.full_calculator(full_calculator_request)
+    return {'statusCode': 200,
+            'body': result.json(),
+            'headers': {'Content-Type': 'application/json',"Access-Control-Allow-Origin" : "*",
+                    "Access-Control-Allow-Credentials" : "true" 
+      }}
+
+def payment_to_amount_calculator_api(event, context):
+    body =json.loads(event["body"])
+    query_parameters = event["queryStringParameters"] if 'queryStringParameters' in event else None
+    print("PAYMENT TO AMOUNT")
+    print(query_parameters)
+    starting_term = query_parameters["starting_term"] if query_parameters is not None and 'starting_term' in query_parameters else None
+    increments = query_parameters["increments"] if query_parameters is not None and 'increments' in query_parameters else None
+    
+    options = MaxAmountCalculatorOptions()
+    if starting_term is not None: options.starting_term = int(starting_term)
+    if increments is not None: options.increments = int(increments)
+    full_calculator_request = parse_obj_as(MaxAmountCalculatorRequest,body)
+    result = calc.payments_to_amounts_calculator(full_calculator_request,options)
     return {'statusCode': 200,
             'body': result.json(),
             'headers': {'Content-Type': 'application/json',"Access-Control-Allow-Origin" : "*",

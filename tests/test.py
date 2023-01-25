@@ -2,6 +2,7 @@ from operator import truediv
 import unittest
 import handler
 import mortgage_classes as mc
+import full_calculator_mock as fcm
 import stamp_duty
 import json
 from pydantic import parse_obj_as
@@ -47,13 +48,17 @@ class TestStringMethods(unittest.TestCase):
             self.assertEqual(round(body.loan_amount),round(request["answer"]))
     
     def test_full_calculator(self):
+        i = 0
+        for request in fcm.requests:
+            obj = parse_obj_as(mc.FullCalculatorRequest,request)
+            body = calc.full_calculator(obj)
+            self.assertEqual(body.details_with_ported_mortgage.mortgage_one_details.monthly_payment,fcm.responses[i]["details_with_ported_mortgage"]["mortgage_one_details"]["monthly_payment"])
+   
+    def test_payment_to_amounts(self):
+        i = 0
         
-        for request in full_calculator_requests:
-            
-            body = calc.full_calculator(request["request"])
-            print(body)
-            self.assertEqual(round(body.new_mortgage_payment),round(request["answer"]))
-            self.assertIsNotNone(round(body.delayed_loan_amount))
+        body = calc.payments_to_amounts_calculator(mc.MaxAmountCalculatorRequest())
+        self.assertIsNotNone(body)
    
     
 requests = [
@@ -63,8 +68,8 @@ requests = [
 ]
 
 remaining_equity_requests = [
-    {"request":mc.RemainingEquityRequest(mortgage_remaining=355000,house_price_sale=700000,debt_to_pay_off=45000,estate_agent_commission=1).dict(),"answer":291600},
-    {"request":mc.RemainingEquityRequest(mortgage_remaining=400000,house_price_sale=750000,debt_to_pay_off=20000,estate_agent_commission=1).dict(),"answer":321000}
+    {"request":mc.RemainingEquityRequest(mortgage_remaining=355000,house_price_sale=700000,debt_to_pay_off=45000,estate_agent_commission=1,pay_stamp_duty=True).dict(),"answer":291600},
+    {"request":mc.RemainingEquityRequest(mortgage_remaining=400000,house_price_sale=750000,debt_to_pay_off=20000,estate_agent_commission=1,pay_stamp_duty=True).dict(),"answer":321000}
 ]
 
 mortgage_needed_request = [
