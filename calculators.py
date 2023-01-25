@@ -12,16 +12,16 @@ def full_calculator(request:FullCalculatorRequest):
     house_price_to_sell = request.house_price_to_sell
     mortgage_one_loan_amount = request.mortgage_one.loan_amount
     after_house_sale = house_price_to_sell-mortgage_one_loan_amount
-    after_pay_estate_agent = after_house_sale - (((house_price_to_sell)*0.011)*1.20)
+    after_pay_estate_agent = after_house_sale - (house_price_to_sell*(request.estate_agent_commission/100))*1.2
     after_pay_debt = after_pay_estate_agent-request.debts_to_pay_off
     after_pay_solicitor = after_pay_debt-2000
     after_pay_stamp_duty = after_pay_solicitor - stamp_duty.duty_calculator(request.house_price_to_buy)
 
     calculation_breakdown = CalculationBreakdown(after_house_sale=after_house_sale,after_pay_debt=after_pay_debt,after_pay_estate_agent=after_pay_estate_agent,after_pay_solicitor=after_pay_solicitor,after_pay_stamp_duty=after_pay_stamp_duty)
 
-    equity = remaining_equity(RemainingEquityRequest(house_price_sale=house_price_to_sell,mortgage_remaining=mortgage_one_loan_amount,debt_to_pay_off=request.debts_to_pay_off,estate_agent_commission=request.estate_agent_commission,pay_stamp_duty=request.use_equity_to_pay_duty))
-    equity.remaining_equity = equity.remaining_equity-request.renovation_money
-    total_mortgage_needed = how_much_mortgage_do_i_need(HowMuchMortgageRequest(house_price_to_buy=request.house_price_to_buy,remaining_equity=equity.remaining_equity))
+    # equity = remaining_equity(RemainingEquityRequest(house_price_sale=house_price_to_sell,mortgage_remaining=mortgage_one_loan_amount,debt_to_pay_off=request.debts_to_pay_off,estate_agent_commission=request.estate_agent_commission,pay_stamp_duty=request.use_equity_to_pay_duty))
+    # equity.remaining_equity = equity.remaining_equity-request.renovation_money
+    total_mortgage_needed = how_much_mortgage_do_i_need(HowMuchMortgageRequest(house_price_to_buy=request.house_price_to_buy,remaining_equity=after_pay_stamp_duty))
 
     ltv = (total_mortgage_needed.total_mortgage_needed/request.house_price_to_buy)*100
  
@@ -131,10 +131,11 @@ def remaining_equity(request:RemainingEquityRequest):
    
     remaining_equity = remaining_equity - estate_agent_fee
     
-    if request.pay_stamp_duty:
-        stamp_duty_value = stamp_duty.duty_calculator(house_price)
-        # print("STAMP DUTY %s"%stamp_duty_value)
-        remaining_equity = remaining_equity- stamp_duty_value
+    
+
+    stamp_duty_value = stamp_duty.duty_calculator(house_price)
+    
+    remaining_equity = remaining_equity- stamp_duty_value
         
     return RemainingEquityResponse(remaining_equity=remaining_equity)
 
