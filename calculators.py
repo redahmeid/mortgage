@@ -64,22 +64,22 @@ def full_calculator(request:FullCalculatorRequest):
         equity=after_pay_stamp_duty)
     
 
-    # non_ported_equity = remaining_equity(RemainingEquityRequest(house_price_sale=house_price_to_sell,mortgage_remaining=mortgage_one_loan_amount,debt_to_pay_off=request.debts_to_pay_off+request.early_payment_fee,estate_agent_commission=request.estate_agent_commission,pay_stamp_duty=False))
-    # savings = savings_calculator(SavingsAccountCalculatorRequest(initial_deposit=non_ported_equity.remaining_equity,interest=3,term=1)) 
+    non_ported_equity = remaining_equity(RemainingEquityRequest(house_price_sale=house_price_to_sell,mortgage_remaining=mortgage_one_loan_amount,debt_to_pay_off=request.debts_to_pay_off+request.early_payment_fee,estate_agent_commission=request.estate_agent_commission,pay_stamp_duty=False))
+    savings = savings_calculator(SavingsAccountCalculatorRequest(initial_deposit=non_ported_equity.remaining_equity,interest=4,term=1)) 
     
-    # savings = savings-stamp_duty.duty_calculator(house_price_to_sell)
+    savings = savings-stamp_duty.duty_calculator(house_price_to_sell)
 
-    # non_ported_mortgage_needed = how_much_mortgage_do_i_need(HowMuchMortgageRequest(house_price_to_buy=request.house_price_to_buy,remaining_equity=savings))
+    non_ported_mortgage_needed = how_much_mortgage_do_i_need(HowMuchMortgageRequest(house_price_to_buy=request.house_price_to_buy,remaining_equity=savings))
 
-    # non_ported_mortgage = mortgage_payments(BasicCalculatorRequest(fixed_term_rate_years=request.non_ported_mortgage.fixed_term_rate_years,fixed_term_rate=request.non_ported_mortgage.fixed_term_rate,loan_term_years=request.non_ported_mortgage.loan_term_years,loan_amount=non_ported_mortgage_needed.total_mortgage_needed,rate_after_fixed_term=request.non_ported_mortgage.rate_after_fixed_term))
+    non_ported_mortgage = mortgage_payments(BasicCalculatorRequest(fixed_term_rate_years=request.non_ported_mortgage.fixed_term_rate_years,fixed_term_rate=request.non_ported_mortgage.fixed_term_rate,loan_term_years=request.non_ported_mortgage.loan_term_years,loan_amount=non_ported_mortgage_needed.total_mortgage_needed,rate_after_fixed_term=request.non_ported_mortgage.rate_after_fixed_term))
     
-    # # what mortgage can I get with ported payment
-    # rent = request.delay_mortgage_details.rent_amount*request.delay_mortgage_details.length_of_rent
-    # loan_amount_if_not_buying_straight = mortgage_amount(AmountCalculatorRequest(loan_term_years=request.mortgage_two.loan_term_years,fixed_term_rate=request.delay_mortgage_details.presumed_rate,monthly_payment=total_mortgage_monthly_payments))
-    # delayed_property_amount = round(loan_amount_if_not_buying_straight.loan_amount+equity.remaining_equity-request.early_payment_fee-rent)
-    # percentage_change = ((request.house_price_to_buy-delayed_property_amount)/request.house_price_to_buy)*100
-    # delayed_property_response = DelayedMortgageResponse(loan_amount=loan_amount_if_not_buying_straight.loan_amount,max_property_value=delayed_property_amount,percentage_drop=percentage_change)
-    return FullCalculatorResponse(details_with_ported_mortgage=ported_mortgage,ltv=ltv,calculation_breakdown=calculation_breakdown)
+    # what mortgage can I get with ported payment
+    rent = request.delay_mortgage_details.rent_amount*request.delay_mortgage_details.length_of_rent
+    loan_amount_if_not_buying_straight = mortgage_amount(AmountCalculatorRequest(loan_term_years=request.mortgage_two.loan_term_years,fixed_term_rate=request.delay_mortgage_details.presumed_rate,monthly_payment=total_mortgage_monthly_payments))
+    delayed_property_amount = round(loan_amount_if_not_buying_straight.loan_amount+non_ported_equity.remaining_equity-request.early_payment_fee-rent)
+    percentage_change = ((request.house_price_to_buy-delayed_property_amount)/request.house_price_to_buy)*100
+    delayed_property_response = DelayedMortgageResponse(loan_amount=loan_amount_if_not_buying_straight.loan_amount,max_property_value=delayed_property_amount,percentage_drop=percentage_change)
+    return FullCalculatorResponse(details_with_ported_mortgage=ported_mortgage,ltv=ltv,calculation_breakdown=calculation_breakdown,details_with_delayed_buy=delayed_property_response)
 
 def mortgage_payments(mortgage:BasicCalculatorRequest):
   

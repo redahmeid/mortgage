@@ -116,6 +116,7 @@ class CalculationBreakdown(BaseModel):
 
 class FullCalculatorResponse(BaseModel):
     details_with_ported_mortgage:Optional[DoubleMortgageResponse]
+    details_with_delayed_buy:Optional[DelayedMortgageResponse]
     calculation_breakdown:CalculationBreakdown
     ltv:float
 
